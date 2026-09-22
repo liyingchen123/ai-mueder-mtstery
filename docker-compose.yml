@@ -1,0 +1,39 @@
+services:
+  game:
+    build: .
+    # 仅绑定到本机回环：公网由 host 上的 Nginx 反代 + HTTPS 暴露
+    ports:
+      - "127.0.0.1:8747:8747"
+    environment:
+      PORT: "8747"
+      HOST: "0.0.0.0" # 容器内监听全部接口；端口映射只绑 127.0.0.1
+      # 将 Key 写在 .env（与 compose 同目录），不会进入镜像层
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_MODEL: ${OPENAI_MODEL:-grok-4.5}
+      DOUBAO_API_KEY: ${DOUBAO_API_KEY:-}
+      DOUBAO_BASE_URL: ${DOUBAO_BASE_URL:-https://ark.cn-beijing.volces.com/api/v3}
+      DOUBAO_MODEL: ${DOUBAO_MODEL:-gemini-3.5-flash}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-20250514}
+      # Phase 11 安全加固
+      SITE_TOKEN: ${SITE_TOKEN:-}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-}
+    # .env 物理隔离在父目录（Vibecoding/.env），不进子文件夹 / git 仓库
+    env_file:
+      - path: ../.env
+        required: false
+    restart: unless-stopped
+    # 容器文件系统只读，更防被篡改；Node 不需要写盘（仅内存限流桶）
+    read_only: true
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"

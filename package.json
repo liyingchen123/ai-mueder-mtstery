@@ -1,0 +1,19 @@
+{
+  "name": "ai-murder-mystery",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Murder Mystery — four LLMs, one fixed case, server-side isolation and scoring.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "verify": "node scripts/verify-phase6.cjs && node scripts/verify-phase7.cjs && node scripts/verify-phase9.cjs",
+    "verify:phase6": "node scripts/verify-phase6.cjs",
+    "verify:phase7": "node scripts/verify-phase7.cjs",
+    "verify:phase9": "node scripts/verify-phase9.cjs",
+    "verify:e2e": "node scripts/verify-phase2.cjs && node scripts/verify-phase5.cjs && node scripts/verify-phase10.cjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
